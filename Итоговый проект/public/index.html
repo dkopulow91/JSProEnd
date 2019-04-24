@@ -1,0 +1,383 @@
+я<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Lesson_2</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles/style.css">
+    <script src="scripts/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js"></script>
+	<script src="app.js"></script>
+</head>
+<body id="app">
+   <header>
+       <div class="headerInfo container">
+          <div class="logo">
+              BRAN<span>D</span>
+          </div>
+          <div class="headerSearch">
+             <div class="headerBrowse">
+                 Browse <i class="fas fa-caret-down"></i>
+             </div>
+             <input type="text" placeholder="Search...">
+             <button>
+                 <i class="fas fa-search"></i>
+             </button>
+             <search @onsearch="handleSearch"></search>
+             <cart :cart="cart" :total="total" @ondelete="handleDeleteClick"></cart>
+             <button>Корзина</button>
+          </div>
+          <a class="headerBacket" href=""><img src="images/backet.png" alt="backet"></a>
+          <button class="accountButton">
+          My Account
+          <i class="fas fa-caret-down"></i>
+          </button>
+       </div>
+   </header>
+
+   <div class="goods" v-if="filteredItems.length">
+       <div v-for="item in filteredItems">
+           <h3>{{ item.name }}</h3>
+           <span>{{ item.price }}</span>
+           <button @click="handleBuyClick(item)">Buy</button>
+       </div>
+   </div>
+   <input type="text" v-mode="searchQuery">
+   <ul v-if="cart.length">
+     <li v-for="item in cart">
+       {{ item.name }} ({{ item.quantity }})
+     </li>
+   </ul>
+   <div v-if="cart.length">Общая сумма товаров в корзине: {{ totalAmount }}</div>
+   <div v-if="!cart.length">Корзина пуста</div>
+   <div v-if="!filteredItems.length" class="empty">Ничего не найдено</div>
+   <products @onbuy="handleBuyClick" :query="searchQuery"></products>
+
+
+   <?php
+    require_once('tamplates/top.php');
+    if($_POST){
+    $p_email = $_POST['email'];
+    $p_password = $_POST['password'];
+    $errors = array();
+    if(!$p_email){
+      $errors[] = "Поле email не заполнено";
+    }
+    if(!$p_password){
+      $errors[] = "Поле password не заполнено";
+    }
+    if(!empty($errors)){
+      print_r($errors);
+    }
+    $query = "SELECT*FROM users WHERE email='$p_email' AND password='$p_password'";
+    $adr = mysqli_query($db_con, $query);
+    if(!$adr){
+      exit($query);
+    }
+    $user = mysqli_fetch_array($adr);
+    if(empty($user)){
+      $errors[] = "error log-in";
+    }
+    if(!empty($errors)){
+      exit('error');
+    } else {
+      $_SESSION['user_id']=$user['id'];
+    ?>
+    <script type="text/javascript">
+      document.location.href="panel.php/lk?id=<?echo $user['id']?>";
+    </script>
+    <?
+    }
+  }
+ ?>
+
+<form method="post" action="login.php">
+  <div class="form-group">
+    <label for="email">Email address</label>
+    <input type="email" class="form-control" name="email" id="email1" placeholder="Email">
+  </div>
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+  </div>
+  <button type="submit" class="btn btn-default">Submit</button>
+</form>
+
+
+<? require_once('tamplates/bottom.php') ?>
+
+   <nav class="navigator">
+          <a href="">HOME</a>
+          <a href="">MAN</a>
+          <a href="">WOMEN</a>
+          <a href="">KIDS</a>
+          <a href="">ACCOSERIESE</a>
+          <a href="">FEATURED</a>
+          <a href="">HOT DEALS</a>
+   </nav>
+   <div class="banner">
+      <div class="bannerText">
+         <div class="bannerSign">
+            <div class="bannerSignTop">
+                THE BRAND
+            </div>
+            <div class="bannerSignBottom">
+                OF LUXERIOUS <span>FASHION</span>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="category container clearfix">
+       <div class="categoryMen">
+          <img src="images/men.jpg" alt="men">
+          <div class="menText">
+             <div class="menTextWhat">
+                 HOT DEAL
+             </div>
+             <div class="MenTextFor">
+                 FOR MEN
+             </div>
+          </div>
+       </div>
+       <div class="categoryAccesories">
+          <img src="images/accesories.jpg" alt="accesories">
+          <div class="accesoriesText">
+             <div class="accesoriesTextWhat">
+                 LUXIROUS & TRENDY
+             </div>
+             <div class="accesoriesTextFor">
+                 ACCESORIES
+             </div>
+          </div>
+       </div>
+       <div class="categoryWomen">
+          <img src="images/women.jpg" alt="women">
+          <div class="womenText">
+             <div class="womenTextWhat">
+                 30% OFFER
+             </div>
+             <div class="womenTextFor">
+                 WOMEN
+             </div>
+          </div>
+       </div>
+       <div class="categoryKids">
+          <img src="images/kids.jpg" alt="kids">
+          <div class="kidsText">
+             <div class="kidsTextWhat">
+                 NEW ARRIVALS
+             </div>
+             <div class="kidsTextFor">
+                 FOR KIDS
+             </div>
+          </div>
+       </div>      
+   </div>
+   <div class="product container">
+       <h2 class="productText">Featured Items</h2>
+       <h4 class="productTextBasic">Shop for items based on what we featured in this week</h4>
+       <div class="productContant">
+         <div class="productContant1">
+          <div class="productPhoto1">
+            <img src="images/product1.jpg" alt="product1"> 
+            <p class="productContantText">MANGO PEOPLE T-SHIRT</p>
+            <p class="productContantPrice">$52.00</p>
+          </div>
+          <div class="productPhoto2">
+            <img src="images/product2.jpg" alt="product2"> 
+            <p class="productContantText">MANGO PEOPLE T-SHIRT</p>
+            <p class="productContantPrice">$52.00</p>
+          </div>
+          <div class="productPhoto3">
+            <img class="testPhoto" src="images/product3.jpg" alt="product3"> 
+            <p class="productContantText">MANGO PEOPLE T-SHIRT</p>
+            <p class="productContantPrice">$52.00</p>
+          </div>
+          <div class="productPhoto4">
+            <img src="images/product4.jpg" alt="product4"> 
+            <p class="productContantText">MANGO PEOPLE T-SHIRT</p>
+            <p class="productContantPrice">$52.00</p>
+          </div>
+          </div>
+          <div class="productContant2">
+          <div class="productPhoto5">
+            <img src="images/product5.jpg" alt="product5"> 
+            <p class="productContantText">MANGO PEOPLE T-SHIRT</p>
+            <p class="productContantPrice">$52.00</p>
+          </div>
+          <div class="productPhoto6">
+            <img src="images/product6.jpg" alt="product6"> 
+            <p class="productContantText">MANGO PEOPLE T-SHIRT</p>
+            <p class="productContantPrice">$52.00</p>
+          </div>
+          <div class="productPhoto7">
+            <img src="images/product7.jpg" alt="product7"> 
+            <p class="productContantText">MANGO PEOPLE T-SHIRT</p>
+            <p class="productContantPrice">$52.00</p>
+          </div>
+          <div class="productPhoto8">
+            <img src="images/product8.jpg" alt="product8"> 
+            <p class="productContantText">MANGO PEOPLE T-SHIRT</p>
+            <p class="productContantPrice">$52.00</p>
+          </div>
+       </div>
+       </div>
+       <div class="browseAllProduct">
+          <button class="browseAllButton">
+          Browse All Product
+          <i class="fas fa-arrow-right"></i>
+          </button>
+       </div>
+   </div>
+   <div class="feature container">
+     <div class="featuredText">
+           <div class="featuredSign">
+                <div class="featuredSignTop">
+                30% <span>OFFER</span>
+                </div>
+                <div class="featuredSignBottom">
+                FOR WOMEN
+                </div>
+            </div>
+      </div>
+      <div class="featuredFoh">
+          <div class="featuredFohText">
+              <div class="featuredFohTextFirst">
+                  Free Delivery
+              </div>
+              <div class="featuredFohTextSecond">
+                  Worldwide delivery on all.Authorit tively morph next-generation innovation with extensive models.
+              </div>
+          </div>
+          <div class="featuredFohText">
+              <div class="featuredFohTextFirst">
+                  Sales & disconts
+              </div>
+              <div class="featuredFohTextSecond">
+                  Worldwide delivery on all.Authorit tively morph next-generation innovation with extensive models.
+              </div>
+          </div>
+          <div class="featuredFohText">
+              <div class="featuredFohTextFirst">
+                  Quality assurance
+              </div>
+              <div class="featuredFohTextSecond">
+                  Worldwide delivery on all.Authorit tively morph next-generation innovation with extensive models.
+              </div>
+          </div>
+      </div>
+   </div>
+   <div class="subscribeWrap">
+        <div class="container subscribe">
+            <div class="reviews">
+                <div class="reviewUnit">
+                    <div class="reviewUnitLeft">
+                        <img src="images/debscribePhoto.png" alt="">
+                    </div>
+                    <div class="reviewUnitRight">
+                        <blockquote>
+                            “Vestibulum quis porttitor dui! Quisque viverra nunc mi,
+                            a pulvinar purus condimentum a. Aliquam condimentum mattis neque sed pretium”
+                        </blockquote>
+                        <div class="reviewName">
+                            Bin Burhan
+                        </div>
+                        <div class="reviewFrom">
+                            Dhaka, Bd
+                        </div>
+                        <div class="reviewsSwitch">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="subscribeDivider"></div>
+            <div class="subscribeRight">
+                <div class="subscribeRightHead">
+                    Subscribe
+                </div>
+                <div class="subscribeRightText">
+                    FOR OUR NEWLETTER AND PROMOTION
+                </div>
+                <form class="subscribeForm" action="">
+                    <input placeholder="Enter Your Email" type="text">
+                    <button>Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        window.onload = function(){
+            document.getElementById('add').onclick = startKomm;
+        }
+        function startKomm(){
+            var text = document.getElementById('txt').value;
+            var komm = document.createElement('p');
+            var newText = document.createTextNode(text);
+                komm.appendChild(newText);
+            document.getElementById('komments').appendChild(komm);
+            return true;
+        }
+    </script>
+
+    <footer class="container">
+        <div class="footerLogo">
+            <div class="logo">
+                BRAN<span>D</span>
+            </div>
+            <div class="footerText1">
+                Objectively transition extensive data rather than cross functional solutions. Monotonectally syndicate
+                multidisciplinary materials before go forward benefits. Intrinsicly syndicate an expanded array of
+                processes and cross-unit partnerships.
+            </div>
+            <div class="footerText2">
+                Efficiently plagiarize 24/365 action items and focused infomediaries.
+                Distinctively seize superior initiatives for wireless technologies. Dynamically optimize.
+            </div>
+        </div>
+        <div class="footerRight">
+            <h3>COMPANY</h3>
+            <a href="">Home</a>
+            <a href="">Shop</a>
+            <a href="">About</a>
+            <a href="">How It Works</a>
+            <a href="">Contact</a>
+        </div>
+        <div class="footerRight">
+            <h3>INFORMATION</h3>
+            <a href="">Tearms & Condition</a>
+            <a href="">Privacy Policy</a>
+            <a href="">How to Buy</a>
+            <a href="">How to Sell</a>
+            <a href="">Promotion</a>
+        </div>
+        <div class="footerRight">
+            <h3>SHOP CATEGORY</h3>
+            <a href="">Men</a>
+            <a href="">Women</a>
+            <a href="">Child</a>
+            <a href="">Apparel</a>
+            <a href="">Browse All</a>
+        </div>
+    </footer>
+    <div class="copyrights">
+        <div class="container copyrightsTop">
+            <div class="copyrightsLeft">
+                &copy; 2019 Brand All Rights Reserved.
+            </div>
+            <div class="copyrightsSocial">
+                <a href=""><i class="fab fa-facebook-f"></i></a>
+                <a href=""><i class="fab fa-twitter"></i></a>
+                <a href=""><i class="fab fa-linkedin-in"></i></a>
+                <a href=""><i class="fab fa-pinterest-p"></i></a>
+                <a href=""><i class="fab fa-google-plus-g"></i></a>
+            </div>
+        </div>
+    </div>
+   
+
+</body>
+</html>

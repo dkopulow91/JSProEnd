@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<div id="app">
+      <input type="text" v-model="name" />
+      <h1 v-if="name.length !== 0">Hello, {{ transformedName }}</h1>
+      <ul>
+        <li v-bind:class="{ item: true, active: item.active }" v-for="item in items">
+          <h3>{{ item.title }}</h3>
+          <div>{{ item.weight }}</div>
+        </li>
+      </ul>
+      <button @click="handleClick">Click me!</button>
+      <hello-component><span>Dmitry</span></hello-component>
+      <hello-component><span>Ivan</span></hello-component>
+      <hello-component><span>Peter</span></hello-component>
+      <full-name :firstname="name" :lastname="surname"></full-name>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
